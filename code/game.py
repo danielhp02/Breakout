@@ -1,4 +1,4 @@
-import pygame
+import pygame, sys
 import pygame.event as GAME_EVENTS
 import pygame.time as GAME_TIME
 
@@ -18,7 +18,7 @@ surface = pygame.display.set_mode((windowWidth, windowHeight))
 pygame.display.set_caption("Breakout")
 
 # Store states of keys that cause continuous movement
-controlsState = {left: False, right: False}
+controlsState = {'left': False, 'right': False}
 
 # Initialize game objects
 
