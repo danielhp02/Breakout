@@ -111,3 +111,33 @@ class Bat(object):
 
     def draw(self):
         self.pygame.draw.rect(self.surface, self.colour, (self.x, self.y, self.width, self.height))
+
+class Brick():
+    def __init__(self, x, y, pygame, surface, colour, windowWidth):
+        self.x = x
+        self.y = y
+
+        self.pygame = pygame
+        self.surface = surface
+
+        colours = {"red":    (255, 0, 0),
+                   "green":  (0, 255, 0),
+                   "blue":   (0, 0, 255),
+                   "yellow": (255, 255, 0),
+                   "cyan":   (0, 255, 255),
+                   "magenta":(255, 0, 255),
+                   "white":  (255, 255, 255),
+                   "grey":   (127, 127, 127)
+                   }
+
+        try:
+            self.colour = colours[colour]
+        except KeyError:
+            print("'" + colour + "'", "is not a valid colour.")
+            self.colour = (255,255,255)
+
+        self.width = windowWidth // 10
+        self.height = self.width // 4
+
+    def draw(self):
+        self.pygame.draw.rect(self.surface, self.colour, (self.x, self.y, self.width, self.height))
