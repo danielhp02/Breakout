@@ -2,6 +2,8 @@ import pygame, sys
 import pygame.event as GAME_EVENTS
 import pygame.time as GAME_TIME
 
+import objects
+
 # Initialise window variables
 windowWidth = 800
 windowHeight = 600
@@ -20,7 +22,13 @@ pygame.display.set_caption("Breakout")
 # Store states of keys that cause continuous movement
 controlsState = {'left': False, 'right': False}
 
+# Game states
+onBat, playing, gameOver, gameWon = "onBat", "playing", "gameOver", "gameWon" # All possible states
+state = onBat
+
 # Initialize game objects
+bat = objects.Bat(centreX, windowHeight - 25, pygame, surface, 100, 15)
+ball = objects.Ball(pygame, surface, 15, bat)
 
 # Quit and uninitialise the game
 def quitGame():
@@ -43,6 +51,9 @@ while True:
             if event.key == pygame.K_RIGHT:
                 controlsState["right"] = True
                 controlsState["left"] = False
+            if event.key == pygame.K_UP:
+                if state == onBat:
+                    state = playing
 
             if event.key == pygame.K_ESCAPE:
                 quitGame()
@@ -56,6 +67,21 @@ while True:
 
         if event.type == pygame.QUIT:
             quitGame()
+
+    # Check current state and act accordingly
+    if state == onBat:
+        ball.move(windowWidth, windowHeight, onBat)
+        ball.draw()
+
+        bat.move(controlsState["left"], controlsState["right"], windowWidth)
+        bat.draw()
+
+    elif state == playing:
+        ball.move(windowWidth, windowHeight, playing)
+        ball.draw()
+
+        bat.move(controlsState["left"], controlsState["right"], windowWidth)
+        bat.draw()
 
     GAME_TIME.Clock().tick(60)
     pygame.display.update()
