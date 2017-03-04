@@ -134,9 +134,9 @@ class Brick():
             self.colour = colours[colour]
         except KeyError:
             print("'" + colour + "'", "is not a valid colour.")
-            self.colour = (255,255,255)
+            self.colour = colours["white"]
 
-        self.width = windowWidth // 10
+        self.width = windowWidth/10
         self.height = self.width // 4
 
     def draw(self):

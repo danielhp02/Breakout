@@ -29,7 +29,12 @@ state = onBat
 # Initialize game objects
 bat = objects.Bat(centreX, windowHeight - 25, pygame, surface, 100, 15)
 ball = objects.Ball(pygame, surface, 15, bat)
-brick = objects.Brick(centreX, centreY, pygame, surface, "yellow", windowHeight) # Create a single yellow brick around the centre
+
+# Create bricks
+# sampleBrick = objects.Brick(centreX, centreY, pygame, surface, "white", windowHeight) # Sample brick for data
+bricks = []
+for b in range(0, windowWidth+1, windowWidth/10):
+    bricks.append(objects.Brick(b, centreY, pygame, surface, "yellow", windowWidth))
 
 # Quit and uninitialise the game
 def quitGame():
@@ -71,7 +76,8 @@ while True:
 
     # Check current state and act accordingly
     if state == onBat:
-        brick.draw()
+        for brick in bricks:
+            brick.draw()
 
         ball.move(windowWidth, windowHeight, onBat)
         ball.draw()
@@ -80,7 +86,8 @@ while True:
         bat.draw()
 
     elif state == playing:
-        brick.draw()
+        for brick in bricks:
+            brick.draw()
 
         ball.move(windowWidth, windowHeight, playing)
         ball.draw()
