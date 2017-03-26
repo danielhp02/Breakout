@@ -30,11 +30,15 @@ state = onBat
 bat = objects.Bat(centreX, windowHeight - 25, pygame, surface, 100, 15)
 ball = objects.Ball(pygame, surface, 15, bat)
 
-# Create bricks
+# Create bricks - Current config is for testing, will add matrix support soon
 # sampleBrick = objects.Brick(centreX, centreY, pygame, surface, "white", windowHeight) # Sample brick for data
 bricks = []
-for b in range(0, windowWidth+1, windowWidth/10):
+for b in range(0, windowWidth+1, windowWidth//10):
     bricks.append(objects.Brick(b, centreY, pygame, surface, "yellow", windowWidth))
+del bricks[9]
+del bricks[8]
+del bricks[0]
+del bricks[0]
 
 # Quit and uninitialise the game
 def quitGame():
@@ -79,7 +83,7 @@ while True:
         for brick in bricks:
             brick.draw()
 
-        ball.move(windowWidth, windowHeight, onBat)
+        ball.move(windowWidth, windowHeight, onBat, bricks)
         ball.draw()
 
         bat.move(controlsState["left"], controlsState["right"], windowWidth)
@@ -89,7 +93,7 @@ while True:
         for brick in bricks:
             brick.draw()
 
-        ball.move(windowWidth, windowHeight, playing)
+        ball.move(windowWidth, windowHeight, playing, bricks)
         ball.draw()
 
         bat.move(controlsState["left"], controlsState["right"], windowWidth)

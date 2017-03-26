@@ -42,7 +42,7 @@ class Ball():
         self.setSpeed()
 
     # Check for collisions with the bats and the edges of the window
-    def checkForCollisions(self, windowWidth, windowHeight, blocks):
+    def checkForCollisions(self, windowWidth, windowHeight, bricks):
         # Check For collision with left and right boundaries
         if self.x - self.radius < 0 or self.x + self.radius > windowWidth:
             self.dx *= -1
@@ -64,16 +64,22 @@ class Ball():
             self.collisionFrames -= 1
 
         # blocks
-        # for whatever
+        for brick in bricks:
+            if (self.x + self.radius > brick.x and self.x - self.radius < brick.x + brick.width and
+                self.y in range(int(brick.y), int(brick.y) + brick.height)):
+                self.dx *= -1
+            elif (self.y + self.radius > brick.y and self.y - self.radius < brick.y + brick.height and
+                self.x in range(brick.x, brick.x + brick.width)):
+                self.dy *= -1
 
-    def move(self, windowWidth, windowHeight, state):
+
+    def move(self, windowWidth, windowHeight, state, bricks):
         if state == "onBat":
             self.x = self.bat.x + self.bat.width // 2
             self.y = self.bat.y - self.radius
 
         elif state == "playing":
-            blocks = None
-            self.checkForCollisions(windowWidth, windowHeight, blocks)
+            self.checkForCollisions(windowWidth, windowHeight, bricks)
             self.x += self.dx
             self.y += self.dy
 
@@ -136,7 +142,7 @@ class Brick():
             print("'" + colour + "'", "is not a valid colour.")
             self.colour = colours["white"]
 
-        self.width = windowWidth/10
+        self.width = windowWidth//10
         self.height = self.width // 4
 
     def draw(self):
