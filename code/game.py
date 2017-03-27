@@ -3,6 +3,7 @@ import pygame.event as GAME_EVENTS
 import pygame.time as GAME_TIME
 
 import objects
+import levels
 
 # Initialise window variables
 windowWidth = 800
@@ -30,15 +31,19 @@ state = onBat
 bat = objects.Bat(centreX, windowHeight - 25, pygame, surface, 100, 15)
 ball = objects.Ball(pygame, surface, 15, bat)
 
-# Create bricks - Current config is for testing, will add matrix support soon
-# sampleBrick = objects.Brick(centreX, centreY, pygame, surface, "white", windowHeight) # Sample brick for data
+# Create bricks
+currentLevel = 0
+level = levels.level
+
 bricks = []
-for b in range(0, windowWidth+1, windowWidth//10):
-    bricks.append(objects.Brick(b, centreY, pygame, surface, "yellow", windowWidth))
-del bricks[9]
-del bricks[8]
-del bricks[0]
-del bricks[0]
+for l in level:
+    for iy, line in enumerate(l):
+        y = (windowHeight//30) * iy
+        for ix, brick in enumerate(line):
+            if brick == 1:
+                x = (windowWidth//10) * ix
+                bricks.append(objects.Brick(x, y, pygame, surface, "yellow", windowWidth))
+
 
 # Quit and uninitialise the game
 def quitGame():
@@ -64,6 +69,9 @@ while True:
             if event.key == pygame.K_UP:
                 if state == onBat:
                     state = playing
+            if event.key == pygame.K_r:
+                if state != onBat:
+                    state = onBat
 
             if event.key == pygame.K_ESCAPE:
                 quitGame()

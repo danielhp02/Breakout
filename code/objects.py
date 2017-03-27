@@ -142,7 +142,7 @@ class Brick():
             print("'" + colour + "'", "is not a valid colour.")
             self.colour = colours["white"]
 
-        self.width = windowWidth//10
+        self.width = windowWidth // 10
         self.height = self.width // 4
 
     def draw(self):
