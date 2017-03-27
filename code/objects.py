@@ -1,4 +1,5 @@
 import random
+from collections import OrderedDict
 
 class Ball():
 
@@ -131,21 +132,24 @@ class Brick():
         self.pygame = pygame
         self.surface = surface
 
-        colours = {"red":    (255, 0, 0),
-                   "green":  (0, 255, 0),
-                   "blue":   (0, 0, 255),
-                   "yellow": (255, 255, 0),
-                   "cyan":   (0, 255, 255),
-                   "magenta":(255, 0, 255),
-                   "white":  (255, 255, 255),
-                   "grey":   (127, 127, 127)
-                   }
+        self.colours = OrderedDict([
+            ("red",    (255, 0, 0)),
+            ("orange", (255, 69, 0)),
+            ("yellow", (255, 255, 0)),
+            ("green",  (0, 255, 0)),
+            ("blue",   (0, 0, 255)),
+
+            ("cyan",   (0, 255, 255)),
+            ("magenta",(255, 0, 255)),
+            ("grey",   (127, 127, 127)),
+            ("white",  (255, 255, 255))
+            ])
 
         try:
-            self.colour = colours[colour]
+            self.colour = self.colours[colour]
         except KeyError:
-            print("'" + colour + "'", "is not a valid colour.")
-            self.colour = colours["white"]
+            print("'" + colour + "'", "is not a valid colour. Brick will be invisible, but present.")
+            self.colour = (0, 0, 0) # black if failed
 
         self.width = windowWidth // 10
         self.height = self.width // 4

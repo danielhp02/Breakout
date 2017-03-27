@@ -34,17 +34,22 @@ ball = objects.Ball(pygame, surface, 15, bat)
 # Create bricks
 currentLevel = 0
 level = levels.level
+colours = list(objects.Brick(1000,1000,pygame,surface,"magenta", windowWidth).colours.keys())
+linesWithBricks = -1
 
 bricks = []
 for l in level:
     for iy, line in enumerate(l):
         y = (windowHeight//30) * iy
+        if 1 in line:
+            linesWithBricks += 1
+        lineColour = colours[linesWithBricks]
         for ix, brick in enumerate(line):
             if brick == 1:
                 x = (windowWidth//10) * ix
-                bricks.append(objects.Brick(x, y, pygame, surface, "yellow", windowWidth))
+                bricks.append(objects.Brick(x, y, pygame, surface, lineColour, windowWidth))
 
-
+print(linesWithBricks)
 # Quit and uninitialise the game
 def quitGame():
     pygame.quit()
