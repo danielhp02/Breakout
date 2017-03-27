@@ -28,6 +28,9 @@ class Ball():
 
         self.score = 0
 
+        # self.hitBrick = False
+        self.brickIndex = None
+
         # The number of frames the game goes without checking for the collision with
         # the bat to avoid the ball getting stuck
         self.cfAmount = 20
@@ -64,13 +67,15 @@ class Ball():
             self.collisionFrames -= 1
 
         # blocks
-        for brick in bricks:
+        for i, brick in enumerate(bricks):
             if (self.x + self.radius > brick.x and self.x - self.radius < brick.x + brick.width and
                 self.y in range(int(brick.y), int(brick.y) + brick.height)):
                 self.dx *= -1
+                self.brickIndex = i
             elif (self.y + self.radius > brick.y and self.y - self.radius < brick.y + brick.height and
                 self.x in range(brick.x, brick.x + brick.width)):
                 self.dy *= -1
+                self.brickIndex = i
 
 
     def move(self, windowWidth, windowHeight, state, bricks):

@@ -98,6 +98,10 @@ while True:
         bat.draw()
 
     elif state == playing:
+        if ball.brickIndex is not None:
+            del bricks[ball.brickIndex]
+            ball.brickIndex = None
+
         for brick in bricks:
             brick.draw()
 
