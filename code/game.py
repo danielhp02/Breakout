@@ -28,14 +28,17 @@ onBat, playing, gameOver, gameWon = "onBat", "playing", "gameOver", "gameWon" # 
 state = onBat
 
 # Initialize game objects
-bat = objects.Bat(centreX, windowHeight - 25, pygame, surface, 100, 15)
+bat = objects.Bat(centreX, windowHeight - 25, pygame, surface, 100, 15) # Will make this wider at some point
 ball = objects.Ball(pygame, surface, 15, bat)
 
 # Create bricks
 currentLevel = 0
 level = levels.level
-colours = list(objects.Brick(1000,1000,pygame,surface,"magenta", windowWidth).colours.keys())
+sampleBrick = objects.Brick(1000,1000,pygame,surface,"magenta", windowWidth)
+colours = list(sampleBrick.colours.keys())
+currentColour = -1
 linesWithBricks = -1
+lineColour = 0
 
 bricks = []
 for l in level:
@@ -43,11 +46,15 @@ for l in level:
         y = (windowHeight//30) * iy
         if 1 in line:
             linesWithBricks += 1
-        lineColour = colours[linesWithBricks]
+            if linesWithBricks % levels.colourLines[currentLevel] == 0:
+                currentColour += 1
+            lineColour = colours[currentColour]
+            print(linesWithBricks, "\n", lineColour)
         for ix, brick in enumerate(line):
             if brick == 1:
                 x = (windowWidth//10) * ix
                 bricks.append(objects.Brick(x, y, pygame, surface, lineColour, windowWidth))
+    break # Please ignore dodgy outer for loop for now
 
 print(linesWithBricks)
 # Quit and uninitialise the game
