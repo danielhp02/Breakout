@@ -24,8 +24,13 @@ pygame.display.set_caption("Breakout")
 controlsState = {'left': False, 'right': False}
 
 # Game states
-onBat, playing, gameOver, gameWon = "onBat", "playing", "gameOver", "gameWon" # All possible states
+onBat = "onBat"
+playing = "playing"
+gameOver = "gameOver"
+gameWon = "gameWon"
+gamePaused = "gamePaused"
 state = onBat
+previousState = gamePaused
 
 score = 0
 
@@ -34,17 +39,19 @@ bat = objects.Bat(centreX, windowHeight - 25, pygame, surface, 100, 15) # Will m
 ball = objects.Ball(pygame, surface, 15, bat)
 
 # Create bricks
-currentLevel = 0
+currentLevel = -1
 level = levels.level
 sampleBrick = objects.Brick(1000,1000,pygame,surface,"black", windowWidth)
 colours = list(sampleBrick.colours.keys())
-currentColour = -1
-linesWithBricks = -1
-lineColour = 0
 
 bricks = []
-for l in level:
-    for iy, line in enumerate(l):
+def newLevel(level_):
+    # global nothingAtTheMoment
+
+    currentColour = -1
+    linesWithBricks = -1
+
+    for iy, line in enumerate(level[level_]):
         y = (windowHeight//30) * iy
         if 1 in line:
             linesWithBricks += 1
@@ -56,11 +63,24 @@ for l in level:
             if brick == 1:
                 x = (windowWidth//10) * ix
                 bricks.append(objects.Brick(x, y, pygame, surface, lineColour, windowWidth))
-    break # Please ignore dodgy outer for loop for now
+
+def drawBricks():
+    for brick in bricks:
+        brick.draw()
+
+def destroyBricks():
+    global score
+
+    if ball.brickIndex is not None:
+        score += bricks[ball.brickIndex].scoreValue
+        del bricks[ball.brickIndex]
+        ball.brickIndex = None
+        print(len(bricks))
 
 # print(linesWithBricks)
 # Quit and uninitialise the game
 def quitGame():
+    print(score) # Remove when score is displayed
     pygame.quit()
     sys.exit()
 
@@ -82,11 +102,19 @@ while True:
                 controlsState["left"] = False
             if event.key == pygame.K_UP:
                 if state == onBat:
+                    previousState = state
                     state = playing
             if event.key == pygame.K_r:
                 if state != onBat:
+                    previousState = state
                     state = onBat
                     print(score) # Remove when score is displayed
+            if event.key == pygame.K_RETURN:
+                if state == gamePaused and previousState is not None:
+                    state = previousState
+                else:
+                    previousState = state
+                    state = gamePaused
 
             if event.key == pygame.K_ESCAPE:
                 quitGame()
@@ -102,9 +130,19 @@ while True:
             quitGame()
 
     # Check current state and act accordingly
-    if state == onBat:
-        for brick in bricks:
-            brick.draw()
+    if state == gamePaused:
+        drawBricks()
+
+        ball.draw()
+
+        bat.draw()
+
+    elif state == onBat:
+        if len(bricks) == 0:
+            currentLevel += 1
+            newLevel(currentLevel)
+
+        drawBricks()
 
         ball.move(windowWidth, windowHeight, onBat, bricks)
         ball.draw()
@@ -113,13 +151,12 @@ while True:
         bat.draw()
 
     elif state == playing:
-        if ball.brickIndex is not None:
-            score += bricks[ball.brickIndex].scoreValue
-            del bricks[ball.brickIndex]
-            ball.brickIndex = None
+        if len(bricks) == 0:
+            previousState = state
+            state = onBat
 
-        for brick in bricks:
-            brick.draw()
+        destroyBricks()
+        drawBricks()
 
         ball.move(windowWidth, windowHeight, playing, bricks)
         ball.draw()
