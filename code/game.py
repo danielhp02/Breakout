@@ -36,7 +36,7 @@ ball = objects.Ball(pygame, surface, 15, bat)
 # Create bricks
 currentLevel = 0
 level = levels.level
-sampleBrick = objects.Brick(1000,1000,pygame,surface,"magenta", windowWidth)
+sampleBrick = objects.Brick(1000,1000,pygame,surface,"black", windowWidth)
 colours = list(sampleBrick.colours.keys())
 currentColour = -1
 linesWithBricks = -1

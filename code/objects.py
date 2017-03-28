@@ -61,8 +61,13 @@ class Ball():
 
         # Bat - Note: the collision is only with the innermost side.
         if self.collisionFrames <= 0:
-            if self.y + self.radius > self.bat.y and self.bat.x < self.x < self.bat.x + self.bat.width:
+            if (self.y + self.radius > self.bat.y and self.y - self.radius < self.bat.y + self.bat.height and
+                self.x in range(int(self.bat.x), int(self.bat.x) + int(self.bat.width))):
                 self.dy *= -1
+                self.collisionFrames = self.cfAmount
+            elif (self.x + self.radius > self.bat.x and self.x - self.radius < self.bat.x + self.bat.width and
+                self.y in range(int(self.bat.y), int(self.bat.y) + int(self.bat.height))):
+                self.dx *= -1
                 self.collisionFrames = self.cfAmount
         else:
             self.collisionFrames -= 1
@@ -142,7 +147,8 @@ class Brick():
             ("cyan",   (0, 255, 255)),
             ("magenta",(255, 0, 255)),
             ("grey",   (127, 127, 127)),
-            ("white",  (255, 255, 255))
+            ("white",  (255, 255, 255)),
+            ("black", (0, 0, 0))
             ])
 
         try:
@@ -157,7 +163,8 @@ class Brick():
             "yellow": 4,
             "green": 4,
             "blue": 1,
-            "cyan": 1 # Just in case
+            "cyan": 1, # Just in case
+            "black": 0
             }
 
         try:
