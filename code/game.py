@@ -20,6 +20,9 @@ pygame.init()
 surface = pygame.display.set_mode((windowWidth, windowHeight))
 pygame.display.set_caption("Breakout")
 
+scoreFont = pygame.font.SysFont("pong_score", 75)
+# scoreFont.setB
+
 # Store states of keys that cause continuous movement
 controlsState = {'left': False, 'right': False}
 
@@ -35,7 +38,7 @@ previousState = gamePaused
 score = 0
 
 # Initialize game objects
-bat = objects.Bat(centreX, windowHeight - 25, pygame, surface, 100, 15) # Will make this wider at some point
+bat = objects.Bat(centreX, windowHeight - 25, pygame, surface, 100, 15) # Will make this wider when more complex bouncing is added
 ball = objects.Ball(pygame, surface, 15, bat)
 
 # Create bricks
@@ -46,8 +49,6 @@ colours = list(sampleBrick.colours.keys())
 
 bricks = []
 def newLevel(level_):
-    # global nothingAtTheMoment
-
     currentColour = -1
     linesWithBricks = -1
 
@@ -58,7 +59,6 @@ def newLevel(level_):
             if linesWithBricks % levels.colourLines[currentLevel] == 0:
                 currentColour += 1
             lineColour = colours[currentColour]
-            # print(linesWithBricks, "\n", lineColour)
         for ix, brick in enumerate(line):
             if brick == 1:
                 x = (windowWidth//10) * ix
@@ -75,12 +75,19 @@ def destroyBricks():
         score += bricks[ball.brickIndex].scoreValue
         del bricks[ball.brickIndex]
         ball.brickIndex = None
-        print(len(bricks))
+        # print(len(bricks))
 
-# print(linesWithBricks)
+def drawScore():
+    global score
+
+    scoreText = str(score)
+    scoreObj = scoreFont.render(scoreText, 1, (127,127,127))
+    scorePosition = (windowWidth/2 - scoreFont.size(scoreText)[0]/2, bat.y - 200)
+    surface.blit(scoreObj, scorePosition)
+
 # Quit and uninitialise the game
 def quitGame():
-    print(score) # Remove when score is displayed
+    # print(score)
     pygame.quit()
     sys.exit()
 
@@ -108,7 +115,6 @@ while True:
                 if state != onBat:
                     previousState = state
                     state = onBat
-                    print(score) # Remove when score is displayed
             if event.key == pygame.K_RETURN:
                 if state == gamePaused and previousState is not None:
                     state = previousState
@@ -131,16 +137,17 @@ while True:
 
     # Check current state and act accordingly
     if state == gamePaused:
+        drawScore()
         drawBricks()
-
         ball.draw()
-
         bat.draw()
 
     elif state == onBat:
         if len(bricks) == 0:
             currentLevel += 1
             newLevel(currentLevel)
+
+        drawScore()
 
         drawBricks()
 
@@ -154,6 +161,8 @@ while True:
         if len(bricks) == 0:
             previousState = state
             state = onBat
+
+        drawScore()
 
         destroyBricks()
         drawBricks()

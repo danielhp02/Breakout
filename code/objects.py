@@ -100,7 +100,7 @@ class Ball():
 class Bat(object):
 
     def __init__(self, startX, y, pygame, surface, width, height):
-        self.x = startX
+        self.x = startX - width/2
         self.y = y
 
         # These are so the bats can interact with the game without pygame being
