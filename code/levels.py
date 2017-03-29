@@ -1,6 +1,6 @@
 level = [
-    # [ # Level changing test
-    #     [0,0,0,0,0,0,0,0,0,0],
+    # [ # Level changing test -  IMPORTANT: if this is added, remember to add a
+    #     [0,0,0,0,0,0,0,0,0,0],#one to position 0 of colourLines
     #     [0,0,0,0,0,0,0,0,0,0],
     #     [0,0,0,0,0,0,0,0,0,0],
     #     [0,0,0,0,0,0,0,0,0,0],
@@ -51,4 +51,4 @@ level = [
     ]
 ]
 
-colourLines = [1,2,1]
+colourLines = [2,1]
