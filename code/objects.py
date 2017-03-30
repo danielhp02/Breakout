@@ -29,8 +29,8 @@ class Ball():
 
         self.score = 0
 
-        # self.hitBrick = False
         self.brickIndex = None
+        self.rockBottom = False
 
         # The number of frames the game goes without checking for the collision with
         # the bat to avoid the ball getting stuck
@@ -38,12 +38,12 @@ class Ball():
         self.collisionFrames = self.cfAmount
 
     # Reset the ball after a point is scored
-    def reset(self):
-        # Reset ball position
-        self.x = self.bat.x + self.bat.width // 2
-        self.y = self.bat.y - self.radius
-
-        self.setSpeed()
+    # def reset(self):
+    #     # Reset ball position
+    #     self.x = self.bat.x + self.bat.width // 2
+    #     self.y = self.bat.y - self.radius
+    #
+    #     self.setSpeed()
 
     # Check for collisions with the bats and the edges of the window
     def checkForCollisions(self, windowWidth, windowHeight, bricks):
@@ -56,8 +56,8 @@ class Ball():
             self.dy *= -1
 
         # Bottom boundary - a life is lost
-        # elif self.y + self.radius > windowHeight:
-        #     self.loseLife()
+        elif self.y + self.radius > windowHeight:
+            self.rockBottom = True
 
         # Bat - Note: the collision is only with the innermost side.
         if self.collisionFrames <= 0:

@@ -22,8 +22,8 @@ pygame.display.set_caption("Breakout")
 
 # Initialise fonts
 scoreFont = pygame.font.SysFont("pong_score", 75)
-pauseFont = pygame.font.SysFont("FreeMono", 75)
-# pauseFont.set_bold(True)
+statusFont = pygame.font.SysFont("FreeMono", 75)
+# statusFont.set_bold(True)
 
 # Store states of keys that cause continuous movement
 controlsState = {'left': False, 'right': False}
@@ -44,9 +44,20 @@ def setState(state_):
 
 score = 0
 
+lives = 2
+
 # Initialize game objects
 bat = objects.Bat(centreX, windowHeight - 25, pygame, surface, 100, 15) # Will make this wider when more complex bouncing is added
 ball = objects.Ball(pygame, surface, 15, bat)
+
+def loseLife():
+    global lives
+
+    lives -= 1
+    if lives < 0:
+        setState(gameOver)
+    else:
+        setState(onBat)
 
 # Create bricks
 currentLevel = -1
@@ -73,8 +84,6 @@ def newLevel(level_):
                     bricks.append(objects.Brick(x, y, pygame, surface, lineColour, windowWidth))
     except IndexError:
         setState(gameWon)
-        print("You Win! Your final score was " + score)
-        quitGame() # Remove later
 
 def drawBricks():
     for brick in bricks:
@@ -91,8 +100,8 @@ def destroyBricks():
 
 def drawPaused():
     pauseText = 'PAUSED'
-    pauseObj = pauseFont.render(pauseText, 1, (200,200,200))
-    pausePosition = (windowWidth/2 - pauseFont.size(pauseText)[0]/2, windowHeight/2 - pauseFont.size(pauseText)[1]/2)
+    pauseObj = statusFont.render(pauseText, 1, (200,200,200))
+    pausePosition = (windowWidth/2 - statusFont.size(pauseText)[0]/2, windowHeight/2 - statusFont.size(pauseText)[1]/2)
     surface.blit(pauseObj, pausePosition)
 
 def drawScore():
@@ -187,6 +196,19 @@ while True:
 
         bat.move(controlsState["left"], controlsState["right"], windowWidth)
         bat.draw()
+
+        if ball.rockBottom:
+            loseLife()
+            ball.rockBottom = False
+            ball.dy = -3
+
+    elif state == gameWon:
+        print("You Win! Your final score was " + str(score))
+        quitGame() # Remove later
+
+    elif state == gameOver:
+        print("Game over! You lost with a final score of " + str(score))
+        quitGame()
 
     GAME_TIME.Clock().tick(60)
     pygame.display.update()
