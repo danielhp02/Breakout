@@ -35,6 +35,11 @@ gamePaused = "gamePaused"
 state = onBat
 previousState = gamePaused
 
+def setState(state_):
+    global state
+    previousState = state
+    state = state_
+
 score = 0
 
 # Initialize game objects
@@ -52,17 +57,22 @@ def newLevel(level_):
     currentColour = -1
     linesWithBricks = -1
 
-    for iy, line in enumerate(level[level_]):
-        y = (windowHeight//30) * iy
-        if 1 in line:
-            linesWithBricks += 1
-            if linesWithBricks % levels.colourLines[currentLevel] == 0:
-                currentColour += 1
-            lineColour = colours[currentColour]
-        for ix, brick in enumerate(line):
-            if brick == 1:
-                x = (windowWidth//10) * ix
-                bricks.append(objects.Brick(x, y, pygame, surface, lineColour, windowWidth))
+    try:
+        for iy, line in enumerate(level[level_]):
+            y = (windowHeight//30) * iy
+            if 1 in line:
+                linesWithBricks += 1
+                if linesWithBricks % levels.colourLines[currentLevel] == 0:
+                    currentColour += 1
+                lineColour = colours[currentColour]
+            for ix, brick in enumerate(line):
+                if brick == 1:
+                    x = (windowWidth//10) * ix
+                    bricks.append(objects.Brick(x, y, pygame, surface, lineColour, windowWidth))
+    except IndexError:
+        setState(gameWon)
+        print("You Win! Your final score was " + score)
+        quitGame() # Remove later
 
 def drawBricks():
     for brick in bricks:
@@ -109,18 +119,15 @@ while True:
                 controlsState["left"] = False
             if event.key == pygame.K_UP:
                 if state == onBat:
-                    previousState = state
-                    state = playing
+                    setState(playing)
             if event.key == pygame.K_r:
                 if state != onBat:
-                    previousState = state
-                    state = onBat
+                    setState(onBat)
             if event.key == pygame.K_RETURN:
                 if state == gamePaused and previousState is not None:
                     state = previousState
                 else:
-                    previousState = state
-                    state = gamePaused
+                    setState(gamePaused)
 
             if event.key == pygame.K_ESCAPE:
                 quitGame()
@@ -159,8 +166,7 @@ while True:
 
     elif state == playing:
         if len(bricks) == 0:
-            previousState = state
-            state = onBat
+            setState(onBat)
 
         drawScore()
 
