@@ -92,7 +92,7 @@ def drawScore():
 
     scoreText = str(score)
     scoreObj = scoreFont.render(scoreText, 1, (127,127,127))
-    scorePosition = (windowWidth/2 - scoreFont.size(scoreText)[0]/2, bat.y - 200)
+    scorePosition = (windowWidth/2 - scoreFont.size(scoreText)[0]/4, bat.y - 200) #
     surface.blit(scoreObj, scorePosition)
 
 # Quit and uninitialise the game
