@@ -20,8 +20,10 @@ pygame.init()
 surface = pygame.display.set_mode((windowWidth, windowHeight))
 pygame.display.set_caption("Breakout")
 
+# Initialise fonts
 scoreFont = pygame.font.SysFont("pong_score", 75)
-# scoreFont.setB
+pauseFont = pygame.font.SysFont("FreeMono", 75)
+# pauseFont.set_bold(True)
 
 # Store states of keys that cause continuous movement
 controlsState = {'left': False, 'right': False}
@@ -36,7 +38,7 @@ state = onBat
 previousState = gamePaused
 
 def setState(state_):
-    global state
+    global state, previousState
     previousState = state
     state = state_
 
@@ -86,6 +88,12 @@ def destroyBricks():
         del bricks[ball.brickIndex]
         ball.brickIndex = None
         # print(len(bricks))
+
+def drawPaused():
+    pauseText = 'PAUSED'
+    pauseObj = pauseFont.render(pauseText, 1, (200,200,200))
+    pausePosition = (windowWidth/2 - pauseFont.size(pauseText)[0]/2, windowHeight/2 - pauseFont.size(pauseText)[1]/2)
+    surface.blit(pauseObj, pausePosition)
 
 def drawScore():
     global score
@@ -148,6 +156,7 @@ while True:
         drawBricks()
         ball.draw()
         bat.draw()
+        drawPaused()
 
     elif state == onBat:
         if len(bricks) == 0:
