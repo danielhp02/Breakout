@@ -14,8 +14,7 @@ A simple clone of Atari Breakout using Python 3 and Pygame
 You get points for destroying bricks. The score earned for destroying a brick is
 shown in the table below.
 
-|  Colour  | Points |
-| of Brick | Scored |
+|  Colour of Brick  | Points Scored |
 | -------- | ------ |
 | Red      | 7      |
 | Orange   | 7      |
