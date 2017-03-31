@@ -29,8 +29,11 @@ ubuntuFont = pygame.font.SysFont("ubuntu", 75)
 # statusFont.set_bold(True)
 
 # Load images
-gameOverImg = pygame.image.load('../assets/gameOver.png')
-gameOverImg.convert()
+if __file__ == 'main.py':
+    gameOverImg = pygame.image.load('../assets/gameOver.png')
+else:
+    gameOverImg = pygame.image.load('./assets/gameOver.png')
+gameOverImg.convert() # Apparantly this makes it load slightly faster
 
 # Store states of keys that cause continuous movement
 controlsState = {'left': False, 'right': False}
