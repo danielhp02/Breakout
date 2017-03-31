@@ -23,7 +23,12 @@ pygame.display.set_caption("Breakout")
 # Initialise fonts
 scoreFont = pygame.font.SysFont("pong_score", 75)
 statusFont = pygame.font.SysFont("FreeMono", 75)
+ubuntuFont = pygame.font.SysFont("ubuntu", 75)
 # statusFont.set_bold(True)
+
+# Load images
+gameOverImg = pygame.image.load('../assets/gameOver.png')
+gameOverImg.convert()
 
 # Store states of keys that cause continuous movement
 controlsState = {'left': False, 'right': False}
@@ -44,6 +49,7 @@ def setState(state_):
 
 score = 0
 
+maxLives = 2
 lives = 2
 
 # Initialize game objects
@@ -104,13 +110,46 @@ def drawPaused():
     pausePosition = (windowWidth/2 - statusFont.size(pauseText)[0]/2, windowHeight/2 - statusFont.size(pauseText)[1]/2)
     surface.blit(pauseObj, pausePosition)
 
-def drawScore():
+def drawScore(position=None, font=None, colour='grey'):
     global score
 
+    if colour == 'grey':
+        scoreColour = (127,127,127)
+    elif colour == 'white':
+        scoreColour = (255,255,255)
+    if font is None:
+        font = scoreFont
+
     scoreText = str(score)
-    scoreObj = scoreFont.render(scoreText, 1, (127,127,127))
-    scorePosition = (windowWidth/2 - scoreFont.size(scoreText)[0]/4, bat.y - 200) #
+    if position is None:
+        if font == scoreFont:
+            scorePosition = (windowWidth/2 - font.size(scoreText)[0]/4, bat.y - 200)
+        else:
+            scorePosition = (windowWidth/2 - font.size(scoreText)[0]/2, bat.y - 200)
+    else:
+        if position[0] is None:
+            if font == scoreFont:
+                scorePosition = (windowWidth/2 - font.size(scoreText)[0]/4, position[1])
+            else:
+                scorePosition = (windowWidth/2 - font.size(scoreText)[0]/2, position[1])
+        elif position[1] is None:
+            if font == scoreFont:
+                scorePosition = (position[0], windowWidth/2 - font.size(scoreText)[0]/4) # scoreFont y centring untested
+            else:
+                scorePosition = (position[0], windowWidth/2 - font.size(scoreText)[0]/2)
+        else:
+            scorePosition = position
+    scoreObj = font.render(scoreText, 1, scoreColour)
     surface.blit(scoreObj, scorePosition)
+
+def resetGame(): # Broken; fix
+    global bricks, currentLevel, score, lives
+    bricks = []
+    currentLevel = -1
+    score = 0
+    lives = maxLives
+    setState(onBat)
+    print("game reset")
 
 # Quit and uninitialise the game
 def quitGame():
@@ -141,7 +180,9 @@ while True:
                 if state != onBat:
                     setState(onBat)
             if event.key == pygame.K_RETURN:
-                if state == gamePaused and previousState is not None:
+                if state == gameOver:
+                    resetGame()
+                elif state == gamePaused:
                     state = previousState
                 else:
                     setState(gamePaused)
@@ -207,8 +248,15 @@ while True:
         quitGame() # Remove later
 
     elif state == gameOver:
-        print("Game over! You lost with a final score of " + str(score))
-        quitGame()
+        # print("Game over! You lost with a final score of " + str(score))
+        # quitGame()
+        drawBricks()
+        surface.blit(gameOverImg, (0,0))
+        drawScore((None,240), ubuntuFont, 'white')
 
-    GAME_TIME.Clock().tick(60)
+        bat.move(controlsState["left"], controlsState["right"], windowWidth)
+        bat.draw()
+
+
+    GAME_TIME.Clock().tick(240) # 60 seems best
     pygame.display.update()
