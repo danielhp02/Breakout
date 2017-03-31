@@ -56,6 +56,7 @@ def setState(state_):
     previousState = state
     state = state_
 
+# Initiate player variables
 score = 0
 
 maxLives = 2
@@ -74,7 +75,7 @@ def loseLife():
     else:
         setState(onBat)
 
-# Create bricks
+# Brick/Level related things
 currentLevel = -1
 level = levels.level
 sampleBrick = objects.Brick(1000,1000,pygame,surface,"black", windowWidth)
@@ -97,7 +98,7 @@ def newLevel(level_):
                 if brick == 1:
                     x = (windowWidth//10) * ix
                     bricks.append(objects.Brick(x, y, pygame, surface, lineColour, windowWidth))
-    except IndexError:
+    except IndexError: # This means that the last level has been completed and therefore the game is won
         setState(gameWon)
 
 def drawBricks():
@@ -113,6 +114,7 @@ def destroyBricks():
         ball.brickIndex = None
         # print(len(bricks))
 
+# Display Info
 def drawPaused():
     pauseText = 'PAUSED'
     pauseObj = statusFont.render(pauseText, 1, (200,200,200))
@@ -194,7 +196,7 @@ while True:
                     state = previousState
                 else:
                     setState(gamePaused)
-            if event.key == pygame.K_t:
+            if event.key == pygame.K_t: # ;)
                 if fps == 60:
                     fps = 240 # x4 speed
                 else:
@@ -271,4 +273,4 @@ while True:
         bat.draw()
 
     GAME_TIME.Clock().tick(fps) # 60 seems best
-    pygame.display.update()
+    pygame.display.update() # Update the screen
