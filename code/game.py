@@ -13,6 +13,8 @@ centreY = windowHeight/2
 
 backgroundColour = (0, 0, 0)
 
+fps = 60
+
 # Initialise pygame
 pygame.init()
 
@@ -142,14 +144,13 @@ def drawScore(position=None, font=None, colour='grey'):
     scoreObj = font.render(scoreText, 1, scoreColour)
     surface.blit(scoreObj, scorePosition)
 
-def resetGame(): # Broken; fix
+def resetGame(): # Important Lesson: When you are trying to reset a game, remember global
     global bricks, currentLevel, score, lives
     bricks = []
     currentLevel = -1
     score = 0
     lives = maxLives
     setState(onBat)
-    print("game reset")
 
 # Quit and uninitialise the game
 def quitGame():
@@ -186,6 +187,11 @@ while True:
                     state = previousState
                 else:
                     setState(gamePaused)
+            if event.key == pygame.K_t:
+                if fps == 60:
+                    fps = 240 # x4 speed
+                else:
+                    fps = 60
 
             if event.key == pygame.K_ESCAPE:
                 quitGame()
@@ -257,6 +263,5 @@ while True:
         bat.move(controlsState["left"], controlsState["right"], windowWidth)
         bat.draw()
 
-
-    GAME_TIME.Clock().tick(240) # 60 seems best
+    GAME_TIME.Clock().tick(fps) # 60 seems best
     pygame.display.update()
