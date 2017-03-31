@@ -22,11 +22,15 @@ pygame.init()
 surface = pygame.display.set_mode((windowWidth, windowHeight))
 pygame.display.set_caption("Breakout")
 
-# Initialise fonts
-scoreFont = pygame.font.SysFont("pong_score", 75)
-statusFont = pygame.font.SysFont("FreeMono", 75)
-ubuntuFont = pygame.font.SysFont("ubuntu", 75)
-# statusFont.set_bold(True)
+# Load fonts
+if __file__ == 'main.py':
+    scoreFont = pygame.font.Font("../assets/fonts/pong_score.ttf", 75)
+    statusFont = pygame.font.Font("../assets/fonts/FreeMono.ttf", 75)
+    ubuntuFont = pygame.font.Font("../assets/fonts/Ubuntu-R.ttf", 75)
+else:
+    scoreFont = pygame.font.Font("./assets/fonts/pong_score.ttf", 75)
+    statusFont = pygame.font.Font("./assets/fonts/FreeMono.ttf", 75)
+    ubuntuFont = pygame.font.Font("./assets/fonts/Ubuntu-R.ttf", 75)
 
 # Load images
 if __file__ == 'main.py':
