@@ -24,4 +24,4 @@ You get points for destroying bricks. Different coloured bricks are worth differ
 | Cyan     | 1      |
 
 ## Lives
-You lose a life when the ball falls past the bottom of the screen. The lives are in the form of extra balls. When you lose a life, you use one of the extra balls as a replacement for the one you just lost. Your current ball will appear as green in the life display and will disapear once lost.
+You lose a life when the ball falls past the bottom of the screen. The lives are in the form of extra balls. When you lose a life, you use one of the extra balls as a replacement for the one you just lost. Your current ball will appear as green/orange/red in the life display and will disappear once lost. The colour is dependent on how many balls you have left.
