@@ -22,22 +22,25 @@ pygame.init()
 surface = pygame.display.set_mode((windowWidth, windowHeight))
 pygame.display.set_caption("Breakout")
 
-# Load fonts
+# Load images and fonts. This setup is so that the correct location is used for
+# loading assets no matter where the program is run from
 if __file__ == 'main.py':
+    gameOverImg = pygame.image.load('../assets/gameOver.png')
+    gameWonImg = pygame.image.load('../assets/gameWon.png')
+
     scoreFont = pygame.font.Font("../assets/fonts/pong_score.ttf", 75)
     statusFont = pygame.font.Font("../assets/fonts/FreeMono.ttf", 75)
     ubuntuFont = pygame.font.Font("../assets/fonts/Ubuntu-R.ttf", 75)
 else:
+    gameOverImg = pygame.image.load('./assets/gameOver.png')
+    gameWonImg = pygame.image.load('./assets/gameWon.png')
+
     scoreFont = pygame.font.Font("./assets/fonts/pong_score.ttf", 75)
     statusFont = pygame.font.Font("./assets/fonts/FreeMono.ttf", 75)
     ubuntuFont = pygame.font.Font("./assets/fonts/Ubuntu-R.ttf", 75)
 
-# Load images
-if __file__ == 'main.py':
-    gameOverImg = pygame.image.load('../assets/gameOver.png')
-else:
-    gameOverImg = pygame.image.load('./assets/gameOver.png')
 gameOverImg.convert() # Apparantly this makes it load slightly faster
+gameWonImg.convert()
 
 # Store states of keys that cause continuous movement
 controlsState = {'left': False, 'right': False}
@@ -74,6 +77,15 @@ def loseLife():
         setState(gameOver)
     else:
         setState(onBat)
+
+def drawLives():
+    global lives
+
+    for l in range(lives):
+        pygame.draw.circle(surface, (127,127,127), (40*l + 25, 20), ball.radius)
+
+    if lives >= 0:
+        pygame.draw.circle(surface, (0,255,0), (40*lives + 25, 20), ball.radius)
 
 # Brick/Level related things
 currentLevel = -1
@@ -173,6 +185,7 @@ while True:
     # Clear screen
     surface.fill(backgroundColour)
 
+    # React to system inputs
     for event in GAME_EVENTS.get():
 
         if event.type == pygame.KEYDOWN:
@@ -201,6 +214,10 @@ while True:
                     fps = 240 # x4 speed
                 else:
                     fps = 60
+            if event.key == pygame.K_k: # To test win screen/code
+                setState(gameWon)
+            if event.key == pygame.K_l: # To test lose screen/code
+                setState(gameOver)
 
             if event.key == pygame.K_ESCAPE:
                 quitGame()
@@ -218,6 +235,7 @@ while True:
     # Check current state and act accordingly
     if state == gamePaused:
         drawScore()
+        drawLives()
         drawBricks()
         ball.draw()
         bat.draw()
@@ -229,6 +247,7 @@ while True:
             newLevel(currentLevel)
 
         drawScore()
+        drawLives()
 
         drawBricks()
 
@@ -243,6 +262,7 @@ while True:
             setState(onBat)
 
         drawScore()
+        drawLives()
 
         destroyBricks()
         drawBricks()
@@ -259,8 +279,15 @@ while True:
             ball.dy = -3
 
     elif state == gameWon:
-        print("You Win! Your final score was " + str(score))
-        quitGame() # Remove later
+        drawLives()
+        drawBricks()
+        surface.blit(gameWonImg, (0,0))
+        drawScore((445,170), ubuntuFont, 'white')
+
+        bat.move(controlsState["left"], controlsState["right"], windowWidth)
+        bat.draw()
+        # print("You Win! Your final score was " + str(score))
+        # quitGame()
 
     elif state == gameOver:
         # print("Game over! You lost with a final score of " + str(score))
@@ -272,5 +299,5 @@ while True:
         bat.move(controlsState["left"], controlsState["right"], windowWidth)
         bat.draw()
 
-    GAME_TIME.Clock().tick(fps) # 60 seems best
+    GAME_TIME.Clock().tick(fps) # 60 seems best for standard play
     pygame.display.update() # Update the screen
