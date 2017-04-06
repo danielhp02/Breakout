@@ -116,6 +116,9 @@ colours = list(sampleBrick.colours.keys())
 
 bricks = []
 def newLevel(level_):
+    global score
+    if level_ > 0:
+        score += (lives+1)*15
     currentColour = -1
     linesWithBricks = -1
 
