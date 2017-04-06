@@ -1,6 +1,7 @@
-import pygame, sys
+import pygame
 import pygame.event as GAME_EVENTS
 import pygame.time as GAME_TIME
+import sys
 
 import objects
 import levels
@@ -17,6 +18,7 @@ fps = 60
 
 # Initialise pygame
 pygame.init()
+clock = GAME_TIME.Clock()
 
 # Initialise display
 surface = pygame.display.set_mode((windowWidth, windowHeight))
@@ -24,7 +26,7 @@ pygame.display.set_caption("Breakout")
 
 # Load images and fonts. This setup is so that the correct location is used for
 # loading assets no matter where the program is run from
-if __file__ == 'main.py':
+if __file__ == 'main.py': # Only works in terminal, but screw idle
     gameOverImg = pygame.image.load('../assets/gameOver.png')
     gameWonImg = pygame.image.load('../assets/gameWon.png')
 
@@ -76,6 +78,7 @@ def loseLife():
     if lives < 0:
         setState(gameOver)
     else:
+        ball.setSpeed()
         setState(onBat)
 
 def drawLives(asText=False, position=None):
@@ -98,7 +101,11 @@ def drawLives(asText=False, position=None):
         for l in range(lives):
             pygame.draw.circle(surface, (127,127,127), (40*l + 25, 20), ball.radius)
 
-        if lives >= 0:
+        if lives == 0:
+            pygame.draw.circle(surface, (255,0,0), (40*lives + 25, 20), ball.radius)
+        elif lives == 1:
+            pygame.draw.circle(surface, (255,69,0), (40*lives + 25, 20), ball.radius)
+        elif lives == 2:
             pygame.draw.circle(surface, (0,255,0), (40*lives + 25, 20), ball.radius)
 
 # Brick/Level related things
@@ -185,6 +192,7 @@ def resetGame(): # Important Lesson: When you are trying to reset a game, rememb
     currentLevel = -1
     score = 0
     lives = maxLives
+    ball.setSpeed()
     setState(onBat)
 
 # Quit and uninitialise the game
@@ -290,7 +298,6 @@ while True:
         if ball.rockBottom:
             loseLife()
             ball.rockBottom = False
-            ball.dy = -3
 
     elif state == gameWon:
         drawBricks()
@@ -305,14 +312,14 @@ while True:
         # quitGame()
 
     elif state == gameOver:
-        # print("Game over! You lost with a final score of " + str(score))
-        # quitGame()
         drawBricks()
         surface.blit(gameOverImg, (0,0))
         drawScore((None,240), ubuntuFont, 'white')
 
         bat.move(controlsState["left"], controlsState["right"], windowWidth)
         bat.draw()
+        # print("Game over! You lost with a final score of " + str(score))
+        # quitGame()
 
-    GAME_TIME.Clock().tick(fps) # 60 seems best for standard play
+    clock.tick(fps) # 60 seems best for standard play
     pygame.display.update() # Update the screen
