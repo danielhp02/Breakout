@@ -78,14 +78,28 @@ def loseLife():
     else:
         setState(onBat)
 
-def drawLives():
+def drawLives(asText=False, position=None):
     global lives
 
-    for l in range(lives):
-        pygame.draw.circle(surface, (127,127,127), (40*l + 25, 20), ball.radius)
+    if asText is True:
+        font = ubuntuFont
+        lifeText = str(lives)
+        if position is None:
+            lifePosition = (windowWidth/2 - font.size(lifeText)[0]/2, windowHeight/2 - font.size(lifeText)[1]/2)
+        elif position[0] is None:
+            lifePosition = (windowWidth/2 - font.size(lifeText)[0]/2, position[1])
+        elif position[1] is None:
+            lifePosition = (position[0], windowHeight/2 - font.size(lifeText)[1]/2)
+        else:
+            lifePosition = position
+        lifeObj = font.render(lifeText, 1, (255,255,255))
+        surface.blit(lifeObj, lifePosition)
+    else:
+        for l in range(lives):
+            pygame.draw.circle(surface, (127,127,127), (40*l + 25, 20), ball.radius)
 
-    if lives >= 0:
-        pygame.draw.circle(surface, (0,255,0), (40*lives + 25, 20), ball.radius)
+        if lives >= 0:
+            pygame.draw.circle(surface, (0,255,0), (40*lives + 25, 20), ball.radius)
 
 # Brick/Level related things
 currentLevel = -1
@@ -203,7 +217,7 @@ while True:
                 if state != onBat:
                     setState(onBat)
             if event.key == pygame.K_RETURN:
-                if state == gameOver:
+                if state == gameOver or state == gameWon:
                     resetGame()
                 elif state == gamePaused:
                     state = previousState
@@ -279,10 +293,11 @@ while True:
             ball.dy = -3
 
     elif state == gameWon:
-        drawLives()
         drawBricks()
         surface.blit(gameWonImg, (0,0))
-        drawScore((445,170), ubuntuFont, 'white')
+
+        drawScore((None,200), ubuntuFont, 'white')
+        drawLives(True, (None,315))
 
         bat.move(controlsState["left"], controlsState["right"], windowWidth)
         bat.draw()
