@@ -63,6 +63,18 @@ def setState(state_):
     previousState = state
     state = state_
 
+def centreText(pos, font, text):
+    if pos is None:
+        position = (windowWidth/2 - font.size(text)[0]/2, windowHeight/2 - font.size(text)[1]/2)
+    elif pos[0] is None:
+        position = (windowWidth/2 - font.size(text)[0]/2, pos[1])
+    elif pos[1] is None:
+        position = (pos[0], windowHeight/2 - font.size(text)[1]/2)
+    else:
+        position = pos
+    return position
+
+
 # Initiate player variables
 score = 0
 
@@ -90,14 +102,7 @@ def drawLives(asText=False, position=None):
         lives_ = lives + 1
         font = ubuntuFont
         lifeText = str(lives_)
-        if position is None:
-            lifePosition = (windowWidth/2 - font.size(lifeText)[0]/2, windowHeight/2 - font.size(lifeText)[1]/2)
-        elif position[0] is None:
-            lifePosition = (windowWidth/2 - font.size(lifeText)[0]/2, position[1])
-        elif position[1] is None:
-            lifePosition = (position[0], windowHeight/2 - font.size(lifeText)[1]/2)
-        else:
-            lifePosition = position
+        lifePosition = centreText(position, font, lifeText)
         lifeObj = font.render(lifeText, 1, (255,255,255))
         surface.blit(lifeObj, lifePosition)
     else:
@@ -152,14 +157,7 @@ def displayCurrentLevel(inGame=True, position=None):
     else:
         levelFont = ubuntuFont
         levelText = str(currentLevel + 1)
-        if position is None:
-            levelPosition = (windowWidth/2 - levelFont.size(lifeText)[0]/2, windowHeight/2 - levelFont.size(lifeText)[1]/2)
-        elif position[0] is None:
-            levelPosition = (windowWidth/2 - levelFont.size(levelText)[0]/2, position[1])
-        elif position[1] is None:
-            levelPosition = (position[0], windowHeight/2 - levelFont.size(levelText)[1]/2)
-        else:
-            levelPosition = position
+        levelPosition = centreText(position, levelFont, levelText)
         levelObj = levelFont.render(levelText, 1, (255,255,255))
         surface.blit(levelObj, levelPosition)
 
@@ -194,7 +192,7 @@ def drawScore(position=None, font=None, colour='grey'):
         font = scoreFont
 
     scoreText = str(score)
-    if position is None:
+    if position is None: # I would replace this with centreText but the scoreFont is weird
         if font == scoreFont:
             scorePosition = (windowWidth/2 - font.size(scoreText)[0]/4, bat.y - 200)
         else:
