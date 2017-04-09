@@ -85,8 +85,9 @@ def drawLives(asText=False, position=None):
     global lives
 
     if asText is True:
+        lives_ = lives + 1
         font = ubuntuFont
-        lifeText = str(lives)
+        lifeText = str(lives_)
         if position is None:
             lifePosition = (windowWidth/2 - font.size(lifeText)[0]/2, windowHeight/2 - font.size(lifeText)[1]/2)
         elif position[0] is None:
@@ -224,10 +225,11 @@ while True:
             if event.key == pygame.K_UP:
                 if state == onBat:
                     setState(playing)
-            if event.key == pygame.K_r:
+            if event.key == pygame.K_r: # Reset the ball without losing a life
                 if state != onBat:
                     setState(onBat)
-            if event.key == pygame.K_RETURN:
+                    ball.setSpeed()
+            if event.key == pygame.K_RETURN: # Pause or reset the game
                 if state == gameOver or state == gameWon:
                     resetGame()
                 elif state == gamePaused:
