@@ -33,6 +33,7 @@ if __file__ == 'main.py': # Only works in terminal, but screw idle
     scoreFont = pygame.font.Font("../assets/fonts/pong_score.ttf", 75)
     statusFont = pygame.font.Font("../assets/fonts/FreeMono.ttf", 75)
     ubuntuFont = pygame.font.Font("../assets/fonts/Ubuntu-R.ttf", 75)
+    ubuntuFontSmall = pygame.font.Font("../assets/fonts/Ubuntu-R.ttf", 30)
 else:
     gameOverImg = pygame.image.load('./assets/gameOver.png')
     gameWonImg = pygame.image.load('./assets/gameWon.png')
@@ -40,6 +41,7 @@ else:
     scoreFont = pygame.font.Font("./assets/fonts/pong_score.ttf", 75)
     statusFont = pygame.font.Font("./assets/fonts/FreeMono.ttf", 75)
     ubuntuFont = pygame.font.Font("./assets/fonts/Ubuntu-R.ttf", 75)
+    ubuntuFontSmall = pygame.font.Font("./assets/fonts/Ubuntu-R.ttf", 30)
 
 gameOverImg.convert() # Apparantly this makes it load slightly faster
 gameWonImg.convert()
@@ -137,6 +139,29 @@ def newLevel(level_):
                     bricks.append(objects.Brick(x, y, pygame, surface, lineColour, windowWidth))
     except IndexError: # This means that the last level has been completed and therefore the game is won
         setState(gameWon)
+
+def displayCurrentLevel(inGame=True, position=None):
+    global currentLevel
+
+    if inGame:
+        levelPosition = (650,5)
+        levelText = "Level " + str(currentLevel + 1)
+        levelFont = ubuntuFontSmall
+        levelObj = levelFont.render(levelText, 1, (127,127,127))
+        surface.blit(levelObj, levelPosition)
+    else:
+        levelFont = ubuntuFont
+        levelText = str(currentLevel + 1)
+        if position is None:
+            levelPosition = (windowWidth/2 - levelFont.size(lifeText)[0]/2, windowHeight/2 - levelFont.size(lifeText)[1]/2)
+        elif position[0] is None:
+            levelPosition = (windowWidth/2 - levelFont.size(levelText)[0]/2, position[1])
+        elif position[1] is None:
+            levelPosition = (position[0], windowHeight/2 - levelFont.size(levelText)[1]/2)
+        else:
+            levelPosition = position
+        levelObj = levelFont.render(levelText, 1, (255,255,255))
+        surface.blit(levelObj, levelPosition)
 
 def drawBricks():
     for brick in bricks:
@@ -275,6 +300,7 @@ while True:
 
         drawScore()
         drawLives()
+        displayCurrentLevel()
 
         drawBricks()
 
@@ -290,6 +316,7 @@ while True:
 
         drawScore()
         drawLives()
+        displayCurrentLevel()
 
         destroyBricks()
         drawBricks()
@@ -319,7 +346,8 @@ while True:
     elif state == gameOver:
         drawBricks()
         surface.blit(gameOverImg, (0,0))
-        drawScore((None,240), ubuntuFont, 'white')
+        drawScore((None,200), ubuntuFont, 'white')
+        displayCurrentLevel(False, (None, 325))
 
         bat.move(controlsState["left"], controlsState["right"], windowWidth)
         bat.draw()
