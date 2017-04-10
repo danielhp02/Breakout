@@ -213,6 +213,15 @@ def drawScore(position=None, font=None, colour='grey'):
     scoreObj = font.render(scoreText, 1, scoreColour)
     surface.blit(scoreObj, scorePosition)
 
+# Win/lose screens
+def endGameHeading():
+    global state
+
+    if state == gameWon:
+        headingText = "You win!"
+    elif state == gameOver:
+        headingText = "You lose!"
+
 def resetGame(): # Important Lesson: When you are trying to reset a game, remember global
     global bricks, currentLevel, score, lives
     bricks = []
