@@ -1,6 +1,8 @@
 import random
 from collections import OrderedDict
 
+import colours
+
 class Ball():
 
     def setSpeed(self):
@@ -25,7 +27,7 @@ class Ball():
 
         self.setSpeed()
 
-        self.colour = (255, 255, 255)
+        self.colour = colours.white
 
         self.score = 0
 
@@ -36,14 +38,6 @@ class Ball():
         # the bat to avoid the ball getting stuck
         self.cfAmount = 20
         self.collisionFrames = self.cfAmount
-
-    # Reset the ball after a point is scored
-    # def reset(self):
-    #     # Reset ball position
-    #     self.x = self.bat.x + self.bat.width // 2
-    #     self.y = self.bat.y - self.radius
-    #
-    #     self.setSpeed()
 
     # Check for collisions with the bats and the edges of the window
     def checkForCollisions(self, windowWidth, windowHeight, bricks):
@@ -59,7 +53,7 @@ class Ball():
         elif self.y + self.radius > windowHeight:
             self.rockBottom = True
 
-        # Bat - Note: the collision is only with the innermost side.
+        # Bat
         if self.collisionFrames <= 0:
             if (self.y + self.radius > self.bat.y and self.y - self.radius < self.bat.y + self.bat.height and
                 self.x in range(int(self.bat.x), int(self.bat.x) + int(self.bat.width))):
@@ -114,7 +108,7 @@ class Bat(object):
         self.speed = 3 # The speed the bat will do either way
         self.dx = 0 # The speed the bat is currently doing
 
-        self.colour = (255, 255, 255)
+        self.colour = colours.white
 
     def move(self, left, right, rightLimit):
         if left and self.x > 0:
@@ -138,24 +132,24 @@ class Brick():
         self.surface = surface
 
         self.colours = OrderedDict([
-            ("red",    (255, 0, 0)),
-            ("orange", (255, 69, 0)),
-            ("yellow", (255, 255, 0)),
-            ("green",  (0, 255, 0)),
-            ("blue",   (0, 0, 255)),
+            ("red",    colours.red,
+            ("orange", colours.orange),
+            ("yellow", colours.yellow),
+            ("green",  colours.green),
+            ("blue",   colours.blue),
 
-            ("cyan",   (0, 255, 255)),
-            ("magenta",(255, 0, 255)),
-            ("grey",   (127, 127, 127)),
-            ("white",  (255, 255, 255)),
-            ("black",  (0, 0, 0))
+            ("cyan",   colours.cyan),
+            ("magenta",colours.magenta),
+            ("grey",   colours.grey),
+            ("white",  colours.white,
+            ("black",  colours.black)
             ])
 
         try:
             self.colour = self.colours[colour]
         except KeyError:
             print("'" + colour + "'", "is not a valid colour. Brick will be invisible, but present.")
-            self.colour = (0, 0, 0) # black if failed
+            self.colour = colours.black # black if failed
 
         self.scoreValues = {
             "red": 7,
@@ -163,7 +157,7 @@ class Brick():
             "yellow": 4,
             "green": 4,
             "blue": 1,
-            "cyan": 1, # Just in case
+            "cyan": 1,
             "black": 0
             }
 

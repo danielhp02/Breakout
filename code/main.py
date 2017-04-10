@@ -5,6 +5,7 @@ import sys
 
 import objects
 import levels
+import colours
 
 # Initialise window variables
 windowWidth = 800
@@ -12,7 +13,7 @@ windowHeight = 600
 centreX = windowWidth/2
 centreY = windowHeight/2
 
-backgroundColour = (0, 0, 0)
+backgroundColour = colours.black
 
 fps = 60
 
@@ -103,17 +104,18 @@ def drawLives(asText=False, position=None):
         font = ubuntuFont
         lifeText = str(lives_)
         lifePosition = centreText(position, font, lifeText)
-        drawText(lifePosition, font, lifeText, (255,255,255))
+        drawText(lifePosition, font, lifeText, colours.white:
+            pass)
     else:
         for l in range(lives):
-            pygame.draw.circle(surface, (127,127,127), (40*l + 25, 20), ball.radius)
+            pygame.draw.circle(surface, colours.grey, (40*l + 25, 20), ball.radius)
 
         if lives == 0:
-            pygame.draw.circle(surface, (255,0,0), (40*lives + 25, 20), ball.radius)
+            pygame.draw.circle(surface, colours.red, (40*lives + 25, 20), ball.radius)
         elif lives == 1:
-            pygame.draw.circle(surface, (255,69,0), (40*lives + 25, 20), ball.radius)
+            pygame.draw.circle(surface, colours.orange, (40*lives + 25, 20), ball.radius)
         elif lives == 2:
-            pygame.draw.circle(surface, (0,255,0), (40*lives + 25, 20), ball.radius)
+            pygame.draw.circle(surface, colours.green, (40*lives + 25, 20), ball.radius)
 
 # Brick/Level related things
 currentLevel = -1
@@ -151,12 +153,12 @@ def displayCurrentLevel(inGame=True, position=None):
         levelPosition = (650,5)
         levelText = "Level " + str(currentLevel + 1)
         levelFont = ubuntuFontSmall
-        drawText(levelPosition, levelFont, levelText, (127,127,127))
+        drawText(levelPosition, levelFont, levelText, colours.grey)
     else:
         levelFont = ubuntuFont
         levelText = str(currentLevel + 1)
         levelPosition = centreText(position, levelFont, levelText)
-        drawText(levelPosition, levelFont, levelText, (255,255,255))
+        drawText(levelPosition, levelFont, levelText, colours.white
 
 def drawBricks():
     for brick in bricks:
@@ -175,15 +177,15 @@ def destroyBricks():
 def drawPaused():
     pauseText = 'PAUSED'
     pausePosition = (windowWidth/2 - statusFont.size(pauseText)[0]/2, windowHeight/2 - statusFont.size(pauseText)[1]/2)
-    drawText(pausePosition, statusFont, pauseText, (200,200,200))
+    drawText(pausePosition, statusFont, pauseText, colours.lightGrey)
 
 def drawScore(position=None, font=None, colour='grey'):
     global score
 
     if colour == 'grey':
-        scoreColour = (127,127,127)
+        scoreColour = colours.grey
     elif colour == 'white':
-        scoreColour = (255,255,255)
+        scoreColour = colours.white
     if font is None:
         font = scoreFont
 
@@ -218,7 +220,7 @@ def endGameHeading():
     elif state == gameOver:
         headingText = "You lose!"
     headingPosition = centreText((None,15), statusFont, headingText)
-    drawText((headingPosition), statusFont, headingText, (255,255,255))
+    drawText((headingPosition), statusFont, headingText, colours.white)
     statusFont.set_bold(False)
 
 def endGameStats():
@@ -236,13 +238,13 @@ def endGameStats():
         statText.append("and on level " + str(currentLevel + 1) + ".")
     for idx,text in enumerate(statText):
         statPosition = centreText((None,75*idx + 120), menuFont, text)
-        drawText(statPosition, menuFont, text, (255,255,255))
+        drawText(statPosition, menuFont, text, colours.white)
 
 def endGameInfo():
     infoText = ["Hit Enter to play", "again."]
     for idx, text in enumerate(infoText):
         infoPostion = centreText((None, 30*idx+475), ubuntuFontSmall, text)
-        drawText(infoPostion, ubuntuFontSmall, text, (255,255,255))
+        drawText(infoPostion, ubuntuFontSmall, text, colours.white)
 
 def drawEndGameOverlay():
     endGameHeading()
