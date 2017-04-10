@@ -26,18 +26,12 @@ pygame.display.set_caption("Breakout")
 
 # Load images and fonts. This setup is so that the correct location is used for
 # loading assets no matter where the program is run from
-if __file__ == 'main.py': # Only works in terminal, but screw idle
-    gameOverImg = pygame.image.load('../assets/gameOver.png')
-    gameWonImg = pygame.image.load('../assets/gameWon.png')
-
+if __file__ == 'main.py': # Only works in terminal, but screw idle (for now)
     scoreFont = pygame.font.Font("../assets/fonts/pong_score.ttf", 75)
     statusFont = pygame.font.Font("../assets/fonts/FreeMono.ttf", 75)
     ubuntuFont = pygame.font.Font("../assets/fonts/Ubuntu-R.ttf", 75)
     ubuntuFontSmall = pygame.font.Font("../assets/fonts/Ubuntu-R.ttf", 30)
 else:
-    gameOverImg = pygame.image.load('./assets/gameOver.png')
-    gameWonImg = pygame.image.load('./assets/gameWon.png')
-
     scoreFont = pygame.font.Font("./assets/fonts/pong_score.ttf", 75)
     statusFont = pygame.font.Font("./assets/fonts/FreeMono.ttf", 75)
     ubuntuFont = pygame.font.Font("./assets/fonts/Ubuntu-R.ttf", 75)
@@ -210,6 +204,47 @@ def drawScore(position=None, font=None, colour='grey'):
         scorePosition = position
     drawText(scorePosition, scoreFont, scoreText, scoreColour)
 
+# Win/lose screens
+menuFont = ubuntuFont
+def endGameHeading():
+    global state
+
+    statusFont.set_bold(True)
+    if state == gameWon:
+        headingText = "You win!"
+    elif state == gameOver:
+        headingText = "You lose!"
+    headingPosition = centreText((None,15), statusFont, headingText)
+    drawText((headingPosition), statusFont, headingText, (255,255,255))
+    statusFont.set_bold(False)
+
+def endGameStats():
+    global state
+
+    statText = []
+    if state == gameWon:
+        statText.append("You finished with a")
+        statText.append("score of " + str(score) + " points")
+        statText.append("and with " + str(lives) + " lives")
+        statText.append("remaining.")
+    elif state == gameOver:
+        statText.append("You finished with a")
+        statText.append("score of " + str(score) + " points")
+        statText.append("and on level " + str(currentLevel + 1) + ".")
+    for idx,text in enumerate(statText):
+        statPosition = centreText((None,75*idx + 120), menuFont, text)
+        drawText(statPosition, menuFont, text, (255,255,255))
+
+def endGameInfo():
+    infoText = ["Hit Enter to play", "again."]
+    for idx, text in enumerate(infoText):
+        infoPostion = centreText((None, 30*idx+475), ubuntuFontSmall, text)
+        drawText(infoPostion, ubuntuFontSmall, text, (255,255,255))
+
+def drawEndGameOverlay():
+    endGameHeading()
+    endGameStats()
+    endGameInfo()
 
 def resetGame(): # Important Lesson: When you are trying to reset a game, remember global
     global bricks, currentLevel, score, lives
@@ -329,10 +364,7 @@ while True:
 
     elif state == gameWon:
         drawBricks()
-        surface.blit(gameWonImg, (0,0))
-
-        drawScore((None,200), ubuntuFont, 'white')
-        drawLives(True, (None,315))
+        drawEndGameOverlay()
 
         bat.move(controlsState["left"], controlsState["right"], windowWidth)
         bat.draw()
@@ -341,9 +373,7 @@ while True:
 
     elif state == gameOver:
         drawBricks()
-        surface.blit(gameOverImg, (0,0))
-        drawScore((None,200), ubuntuFont, 'white')
-        displayCurrentLevel(False, (None, 325))
+        drawEndGameOverlay()
 
         bat.move(controlsState["left"], controlsState["right"], windowWidth)
         bat.draw()
