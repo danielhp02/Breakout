@@ -74,6 +74,9 @@ def centreText(pos, font, text):
         position = pos
     return position
 
+def drawText(position, font, text, colour):
+    textObj = font.render(text, 1, colour)
+    surface.blit(textObj, position)
 
 # Initiate player variables
 score = 0
@@ -103,8 +106,7 @@ def drawLives(asText=False, position=None):
         font = ubuntuFont
         lifeText = str(lives_)
         lifePosition = centreText(position, font, lifeText)
-        lifeObj = font.render(lifeText, 1, (255,255,255))
-        surface.blit(lifeObj, lifePosition)
+        drawText(lifePosition, font, lifeText, (255,255,255))
     else:
         for l in range(lives):
             pygame.draw.circle(surface, (127,127,127), (40*l + 25, 20), ball.radius)
@@ -152,14 +154,12 @@ def displayCurrentLevel(inGame=True, position=None):
         levelPosition = (650,5)
         levelText = "Level " + str(currentLevel + 1)
         levelFont = ubuntuFontSmall
-        levelObj = levelFont.render(levelText, 1, (127,127,127))
-        surface.blit(levelObj, levelPosition)
+        drawText(levelPosition, levelFont, levelText, (127,127,127))
     else:
         levelFont = ubuntuFont
         levelText = str(currentLevel + 1)
         levelPosition = centreText(position, levelFont, levelText)
-        levelObj = levelFont.render(levelText, 1, (255,255,255))
-        surface.blit(levelObj, levelPosition)
+        drawText(levelPosition, levelFont, levelText, (255,255,255))
 
 def drawBricks():
     for brick in bricks:
@@ -177,9 +177,8 @@ def destroyBricks():
 # Display Info
 def drawPaused():
     pauseText = 'PAUSED'
-    pauseObj = statusFont.render(pauseText, 1, (200,200,200))
     pausePosition = (windowWidth/2 - statusFont.size(pauseText)[0]/2, windowHeight/2 - statusFont.size(pauseText)[1]/2)
-    surface.blit(pauseObj, pausePosition)
+    drawText(pausePosition, statusFont, pauseText, (200,200,200))
 
 def drawScore(position=None, font=None, colour='grey'):
     global score
@@ -197,30 +196,20 @@ def drawScore(position=None, font=None, colour='grey'):
             scorePosition = (windowWidth/2 - font.size(scoreText)[0]/4, bat.y - 200)
         else:
             scorePosition = (windowWidth/2 - font.size(scoreText)[0]/2, bat.y - 200)
-    else:
-        if position[0] is None:
-            if font == scoreFont:
-                scorePosition = (windowWidth/2 - font.size(scoreText)[0]/4, position[1])
-            else:
-                scorePosition = (windowWidth/2 - font.size(scoreText)[0]/2, position[1])
-        elif position[1] is None:
-            if font == scoreFont:
-                scorePosition = (position[0], windowWidth/2 - font.size(scoreText)[0]/4) # scoreFont y centring untested
-            else:
-                scorePosition = (position[0], windowWidth/2 - font.size(scoreText)[0]/2)
+    elif position[0] is None:
+        if font == scoreFont:
+            scorePosition = (windowWidth/2 - font.size(scoreText)[0]/4, position[1])
         else:
-            scorePosition = position
-    scoreObj = font.render(scoreText, 1, scoreColour)
-    surface.blit(scoreObj, scorePosition)
+                scorePosition = (windowWidth/2 - font.size(scoreText)[0]/2, position[1])
+    elif position[1] is None:
+        if font == scoreFont:
+            scorePosition = (position[0], windowWidth/2 - font.size(scoreText)[0]/4) # scoreFont y centring untested
+        else:
+            scorePosition = (position[0], windowWidth/2 - font.size(scoreText)[0]/2)
+    else:
+        scorePosition = position
+    drawText(scorePosition, scoreFont, scoreText, scoreColour)
 
-# Win/lose screens
-def endGameHeading():
-    global state
-
-    if state == gameWon:
-        headingText = "You win!"
-    elif state == gameOver:
-        headingText = "You lose!"
 
 def resetGame(): # Important Lesson: When you are trying to reset a game, remember global
     global bricks, currentLevel, score, lives
