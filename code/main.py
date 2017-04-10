@@ -26,19 +26,22 @@ pygame.display.set_caption("Breakout")
 
 # Load images and fonts. This setup is so that the correct location is used for
 # loading assets no matter where the program is run from
-if __file__ == 'main.py': # Only works in terminal, but screw idle (for now)
+try:
+    if __file__ == 'main.py': # Only works in terminal, but screw idle (for now)
+        scoreFont = pygame.font.Font("../assets/fonts/pong_score.ttf", 75)
+        statusFont = pygame.font.Font("../assets/fonts/FreeMono.ttf", 75)
+        ubuntuFont = pygame.font.Font("../assets/fonts/Ubuntu-R.ttf", 75)
+        ubuntuFontSmall = pygame.font.Font("../assets/fonts/Ubuntu-R.ttf", 30)
+    else:
+        scoreFont = pygame.font.Font("./assets/fonts/pong_score.ttf", 75)
+        statusFont = pygame.font.Font("./assets/fonts/FreeMono.ttf", 75)
+        ubuntuFont = pygame.font.Font("./assets/fonts/Ubuntu-R.ttf", 75)
+        ubuntuFontSmall = pygame.font.Font("./assets/fonts/Ubuntu-R.ttf", 30)
+except OSError:
     scoreFont = pygame.font.Font("../assets/fonts/pong_score.ttf", 75)
     statusFont = pygame.font.Font("../assets/fonts/FreeMono.ttf", 75)
     ubuntuFont = pygame.font.Font("../assets/fonts/Ubuntu-R.ttf", 75)
     ubuntuFontSmall = pygame.font.Font("../assets/fonts/Ubuntu-R.ttf", 30)
-else:
-    scoreFont = pygame.font.Font("./assets/fonts/pong_score.ttf", 75)
-    statusFont = pygame.font.Font("./assets/fonts/FreeMono.ttf", 75)
-    ubuntuFont = pygame.font.Font("./assets/fonts/Ubuntu-R.ttf", 75)
-    ubuntuFontSmall = pygame.font.Font("./assets/fonts/Ubuntu-R.ttf", 30)
-
-gameOverImg.convert() # Apparantly this makes it load slightly faster
-gameWonImg.convert()
 
 # Store states of keys that cause continuous movement
 controlsState = {'left': False, 'right': False}
