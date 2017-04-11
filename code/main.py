@@ -16,6 +16,9 @@ centreY = windowHeight/2
 backgroundColour = colours.black
 
 fps = 60
+turbo = False
+# deltaTime = 0
+getTicksLastFrame = 0
 
 # Initialise pygame
 pygame.init()
@@ -31,11 +34,13 @@ try:
     if __file__ == 'main.py': # Only works in terminal, but screw idle (for now)
         scoreFont = pygame.font.Font("../assets/fonts/pong_score.ttf", 75)
         statusFont = pygame.font.Font("../assets/fonts/FreeMono.ttf", 75)
+        statusFontSmall = pygame.font.Font("../assets/fonts/FreeMono.ttf", 25)
         ubuntuFont = pygame.font.Font("../assets/fonts/Ubuntu-R.ttf", 75)
         ubuntuFontSmall = pygame.font.Font("../assets/fonts/Ubuntu-R.ttf", 30)
     else:
         scoreFont = pygame.font.Font("./assets/fonts/pong_score.ttf", 75)
         statusFont = pygame.font.Font("./assets/fonts/FreeMono.ttf", 75)
+        statusFontSmall = pygame.font.Font("./assets/fonts/FreeMono.ttf", 25)
         ubuntuFont = pygame.font.Font("./assets/fonts/Ubuntu-R.ttf", 75)
         ubuntuFontSmall = pygame.font.Font("./assets/fonts/Ubuntu-R.ttf", 30)
 except OSError:
@@ -83,7 +88,7 @@ maxLives = 2
 lives = 2
 
 # Initialize game objects
-bat = objects.Bat(centreX, windowHeight - 25, pygame, surface, 100, 15) # Will make this wider when more complex bouncing is added
+bat = objects.Bat(centreX, windowHeight - 25, pygame, surface, 150, 15)
 ball = objects.Ball(pygame, surface, 15, bat)
 
 def loseLife():
@@ -93,7 +98,7 @@ def loseLife():
     if lives < 0:
         setState(gameOver)
     else:
-        ball.setSpeed()
+        # ball.setSpeed()
         setState(onBat)
 
 def drawLives(asText=False, position=None):
@@ -104,8 +109,7 @@ def drawLives(asText=False, position=None):
         font = ubuntuFont
         lifeText = str(lives_)
         lifePosition = centreText(position, font, lifeText)
-        drawText(lifePosition, font, lifeText, colours.white:
-            pass)
+        drawText(lifePosition, font, lifeText, colours.white)
     else:
         for l in range(lives):
             pygame.draw.circle(surface, colours.grey, (40*l + 25, 20), ball.radius)
@@ -121,7 +125,7 @@ def drawLives(asText=False, position=None):
 currentLevel = -1
 level = levels.level
 sampleBrick = objects.Brick(1000,1000,pygame,surface,"black", windowWidth)
-colours = list(sampleBrick.colours.keys())
+brickColours = list(sampleBrick.colours.keys())
 
 bricks = []
 def newLevel(level_):
@@ -138,7 +142,7 @@ def newLevel(level_):
                 linesWithBricks += 1
                 if linesWithBricks % levels.colourLines[currentLevel] == 0:
                     currentColour += 1
-                lineColour = colours[currentColour]
+                lineColour = brickColours[currentColour]
             for ix, brick in enumerate(line):
                 if brick == 1:
                     x = (windowWidth//10) * ix
@@ -158,7 +162,7 @@ def displayCurrentLevel(inGame=True, position=None):
         levelFont = ubuntuFont
         levelText = str(currentLevel + 1)
         levelPosition = centreText(position, levelFont, levelText)
-        drawText(levelPosition, levelFont, levelText, colours.white
+        drawText(levelPosition, levelFont, levelText, colours.white)
 
 def drawBricks():
     for brick in bricks:
@@ -174,7 +178,7 @@ def destroyBricks():
         # print(len(bricks))
 
 # Display Info
-def drawPaused():
+def drawPaused(): # NOTE: change position to centreText function
     pauseText = 'PAUSED'
     pausePosition = (windowWidth/2 - statusFont.size(pauseText)[0]/2, windowHeight/2 - statusFont.size(pauseText)[1]/2)
     drawText(pausePosition, statusFont, pauseText, colours.lightGrey)
@@ -192,9 +196,9 @@ def drawScore(position=None, font=None, colour='grey'):
     scoreText = str(score)
     if position is None: # I would replace this with centreText but the scoreFont is weird
         if font == scoreFont:
-            scorePosition = (windowWidth/2 - font.size(scoreText)[0]/4, bat.y - 200)
+            scorePosition = (windowWidth/2 - font.size(scoreText)[0]/4, bat.position.y - 200)
         else:
-            scorePosition = (windowWidth/2 - font.size(scoreText)[0]/2, bat.y - 200)
+            scorePosition = (windowWidth/2 - font.size(scoreText)[0]/2, bat.position.y - 200)
     elif position[0] is None:
         if font == scoreFont:
             scorePosition = (windowWidth/2 - font.size(scoreText)[0]/4, position[1])
@@ -208,6 +212,18 @@ def drawScore(position=None, font=None, colour='grey'):
     else:
         scorePosition = position
     drawText(scorePosition, scoreFont, scoreText, scoreColour)
+
+def getDeltaTime():
+    global getTicksLastFrame
+    t = pygame.time.get_ticks()
+    # deltaTime in seconds.
+    deltaTime = (t - getTicksLastFrame) / 1000.0
+    getTicksLastFrame = t
+    return deltaTime
+
+def drawTurbo():
+    if turbo:
+        drawText((10,windowHeight-50), statusFontSmall, 'T', colours.white)
 
 # Win/lose screens
 menuFont = ubuntuFont
@@ -243,8 +259,8 @@ def endGameStats():
 def endGameInfo():
     infoText = ["Hit Enter to play", "again."]
     for idx, text in enumerate(infoText):
-        infoPostion = centreText((None, 30*idx+475), ubuntuFontSmall, text)
-        drawText(infoPostion, ubuntuFontSmall, text, colours.white)
+        infoPosition = centreText((None, 30*idx+475), ubuntuFontSmall, text)
+        drawText(infoPosition, ubuntuFontSmall, text, colours.white)
 
 def drawEndGameOverlay():
     endGameHeading()
@@ -257,7 +273,7 @@ def resetGame(): # Important Lesson: When you are trying to reset a game, rememb
     currentLevel = -1
     score = 0
     lives = maxLives
-    ball.setSpeed()
+    # ball.setSpeed()
     setState(onBat)
 
 # Quit and uninitialise the game
@@ -271,6 +287,9 @@ while True:
 
     # Clear screen
     surface.fill(backgroundColour)
+
+    # Get the delta time
+    deltaTime = getDeltaTime()
 
     # React to system inputs
     for event in GAME_EVENTS.get():
@@ -289,7 +308,7 @@ while True:
             if event.key == pygame.K_r: # Reset the ball without losing a life
                 if state != onBat:
                     setState(onBat)
-                    ball.setSpeed()
+                    # ball.setSpeed()
             if event.key == pygame.K_RETURN: # Pause or reset the game
                 if state == gameOver or state == gameWon:
                     resetGame()
@@ -300,8 +319,10 @@ while True:
             if event.key == pygame.K_t: # ;)
                 if fps == 60:
                     fps = 240 # x4 speed
+                    turbo = True
                 else:
                     fps = 60
+                    turbo = False
             if event.key == pygame.K_k: # To test win screen/code
                 setState(gameWon)
             if event.key == pygame.K_l: # To test lose screen/code
@@ -328,6 +349,7 @@ while True:
         ball.draw()
         bat.draw()
         drawPaused()
+        drawTurbo()
 
     elif state == onBat:
         if len(bricks) == 0:
@@ -337,13 +359,14 @@ while True:
         drawScore()
         drawLives()
         displayCurrentLevel()
+        drawTurbo()
 
         drawBricks()
 
-        ball.move(windowWidth, windowHeight, onBat, bricks)
-        ball.draw()
+        ball.move(windowWidth, windowHeight, state, bricks, deltaTime)
+        bat.move(controlsState["left"], controlsState["right"], windowWidth, deltaTime)
 
-        bat.move(controlsState["left"], controlsState["right"], windowWidth)
+        ball.draw()
         bat.draw()
 
     elif state == playing:
@@ -357,11 +380,13 @@ while True:
         destroyBricks()
         drawBricks()
 
-        ball.move(windowWidth, windowHeight, playing, bricks)
-        ball.draw()
+        ball.move(windowWidth, windowHeight, state, bricks, deltaTime)
+        bat.move(controlsState["left"], controlsState["right"], windowWidth, deltaTime)
 
-        bat.move(controlsState["left"], controlsState["right"], windowWidth)
+        ball.draw()
         bat.draw()
+
+        drawTurbo()
 
         if ball.rockBottom:
             loseLife()
@@ -371,8 +396,9 @@ while True:
         drawBricks()
         drawEndGameOverlay()
 
-        bat.move(controlsState["left"], controlsState["right"], windowWidth)
+        bat.move(controlsState["left"], controlsState["right"], windowWidth, deltaTime)
         bat.draw()
+        drawTurbo()
         # print("You Win! Your final score was " + str(score))
         # quitGame()
 
@@ -380,8 +406,9 @@ while True:
         drawBricks()
         drawEndGameOverlay()
 
-        bat.move(controlsState["left"], controlsState["right"], windowWidth)
+        bat.move(controlsState["left"], controlsState["right"], windowWidth, deltaTime)
         bat.draw()
+        drawTurbo()
         # print("Game over! You lost with a final score of " + str(score))
         # quitGame()
 

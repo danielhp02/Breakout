@@ -1,5 +1,4 @@
 *.pyc
 __pycache__
 *.xcf
-gameOver.png
-gameWon.png
+vectorTest.py
