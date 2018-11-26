@@ -13,6 +13,7 @@ windowHeight = 600
 centreX = windowWidth/2
 centreY = windowHeight/2
 
+overlayOpacity = 100
 backgroundColour = colours.black
 
 fps = 60
@@ -75,6 +76,12 @@ def centreText(pos, font, text):
 def drawText(position, font, text, colour):
     textObj = font.render(text, 1, colour)
     surface.blit(textObj, position)
+
+def drawRect(colour, x, y, width, height):
+    s = pygame.Surface((width,height))  # the size of your rect
+    s.set_alpha(colour[3])                # alpha level
+    s.fill(colour[:3])           # this fills the entire surface
+    surface.blit(s, (x,y))    # (0,0) are the top-left coordinates
 
 # Initiate player variables
 score = 0
@@ -210,6 +217,12 @@ def drawScore(position=None, font=None, colour='grey'):
 
 # Win/lose screens
 menuFont = ubuntuFont
+def endGameBackground():
+    if state == gameWon:
+        drawRect((0,255,0,overlayOpacity), 0, 0, surface.get_width(), surface.get_height())
+    elif state == gameOver:
+        drawRect((255,0,0,overlayOpacity), 0, 0, surface.get_width(), surface.get_height())
+
 def endGameHeading():
     global state
 
@@ -246,6 +259,7 @@ def endGameInfo():
         drawText(infoPostion, ubuntuFontSmall, text, colours.white)
 
 def drawEndGameOverlay():
+    endGameBackground()
     endGameHeading()
     endGameStats()
     endGameInfo()
@@ -368,21 +382,15 @@ while True:
 
     elif state == gameWon:
         drawBricks()
-        drawEndGameOverlay()
-
         bat.move(controlsState["left"], controlsState["right"], windowWidth)
         bat.draw()
-        # print("You Win! Your final score was " + str(score))
-        # quitGame()
+        drawEndGameOverlay()
 
     elif state == gameOver:
         drawBricks()
-        drawEndGameOverlay()
-
         bat.move(controlsState["left"], controlsState["right"], windowWidth)
         bat.draw()
-        # print("Game over! You lost with a final score of " + str(score))
-        # quitGame()
+        drawEndGameOverlay()
 
     clock.tick(fps) # 60 seems best for standard play
     pygame.display.update() # Update the screen
