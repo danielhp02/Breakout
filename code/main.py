@@ -104,8 +104,7 @@ def drawLives(asText=False, position=None):
         font = ubuntuFont
         lifeText = str(lives_)
         lifePosition = centreText(position, font, lifeText)
-        drawText(lifePosition, font, lifeText, colours.white:
-            pass)
+        drawText(lifePosition, font, lifeText, colours.white)
     else:
         for l in range(lives):
             pygame.draw.circle(surface, colours.grey, (40*l + 25, 20), ball.radius)
@@ -121,7 +120,7 @@ def drawLives(asText=False, position=None):
 currentLevel = -1
 level = levels.level
 sampleBrick = objects.Brick(1000,1000,pygame,surface,"black", windowWidth)
-colours = list(sampleBrick.colours.keys())
+levelColours = list(sampleBrick.colours.keys())
 
 bricks = []
 def newLevel(level_):
@@ -138,7 +137,7 @@ def newLevel(level_):
                 linesWithBricks += 1
                 if linesWithBricks % levels.colourLines[currentLevel] == 0:
                     currentColour += 1
-                lineColour = colours[currentColour]
+                lineColour = levelColours[currentColour]
             for ix, brick in enumerate(line):
                 if brick == 1:
                     x = (windowWidth//10) * ix
@@ -158,7 +157,7 @@ def displayCurrentLevel(inGame=True, position=None):
         levelFont = ubuntuFont
         levelText = str(currentLevel + 1)
         levelPosition = centreText(position, levelFont, levelText)
-        drawText(levelPosition, levelFont, levelText, colours.white
+        drawText(levelPosition, levelFont, levelText, colours.white)
 
 def drawBricks():
     for brick in bricks:

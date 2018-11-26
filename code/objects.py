@@ -132,7 +132,7 @@ class Brick():
         self.surface = surface
 
         self.colours = OrderedDict([
-            ("red",    colours.red,
+            ("red",    colours.red),
             ("orange", colours.orange),
             ("yellow", colours.yellow),
             ("green",  colours.green),
@@ -141,7 +141,7 @@ class Brick():
             ("cyan",   colours.cyan),
             ("magenta",colours.magenta),
             ("grey",   colours.grey),
-            ("white",  colours.white,
+            ("white",  colours.white),
             ("black",  colours.black)
             ])
 
