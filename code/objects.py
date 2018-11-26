@@ -105,7 +105,7 @@ class Bat(object):
         self.width = width
         self.height = height
 
-        self.speed = 3 # The speed the bat will do either way
+        self.speed = 4 # The speed the bat will do either way
         self.dx = 0 # The speed the bat is currently doing
 
         self.colour = colours.white
