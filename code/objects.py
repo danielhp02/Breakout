@@ -173,7 +173,7 @@ class Brick():
     def draw(self):
         self.pygame.draw.rect(self.surface, self.colour, (self.x, self.y, self.width, self.height))
 
-class button():
+class Button():
     def __init__(self, pygame, surface, colour, rectangle, text, font):
         self.pygame = pygame
         self.surface = surface
