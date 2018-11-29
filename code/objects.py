@@ -172,3 +172,44 @@ class Brick():
 
     def draw(self):
         self.pygame.draw.rect(self.surface, self.colour, (self.x, self.y, self.width, self.height))
+
+class button():
+    def __init__(self, pygame, surface, colour, rectangle, text, font):
+        self.pygame = pygame
+        self.surface = surface
+        self.colour = colour
+        self.rectangle = self.pygame.Rect(rectangle)
+        self.text = text
+        self.font = font
+
+        self.textObj = self.font.render(self.text, 1, self.colour)
+
+        self.position = (self.rectangle.width/2 - self.font.size(self.text)[0]/2, self.rectangle.height/2 - self.font.size(self.text)[1]/2)
+
+    def draw(self):
+        self.pygame.draw.rect(self.surface, self.colour, self.rectangle)
+        self.surface.blit(self.textObj, self.position)
+
+    def isClicked(self):
+        if button.collidepoint(mouse_pos):
+            return True
+
+# class Menu():
+#     def __init__(self, pygame, surface, title, backgroundColour, titleFont, normalFont, options):
+#         self.pygame = pygame
+#         self.surface = surface
+#         self.title = title
+#         self.backgroundColour = backgroundColour
+#         self.titleFont = titleFont
+#         self.normalFont = normalFont
+#         self.options = options
+#
+#     def draw(self):
+#         # Calculate position of heading
+#         self.titleFont.set_bold(True)
+#         headingPosition = surface.get_width()/2 - self.titleFont.size(self.title)[0]/2, self.titleFont.size(self.title)[1]/3
+#
+#         # Calculate position of options
+#         optionPositions = []
+#         for option in self.options:
+#             optionPositions.append(surface.get_width()/2 - self.normalFont.size(option)[0]/2, self.normalFont.size(option)[1]/3)
