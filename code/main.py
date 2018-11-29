@@ -93,6 +93,9 @@ lives = 2
 bat = objects.Bat(centreX, windowHeight - 25, pygame, surface, 100, 15) # Will make this wider when more complex bouncing is added
 ball = objects.Ball(pygame, surface, 15, bat)
 
+# Initialise buttons
+resumeButton = objects.Button(pygame, surface, colours.black, colours.white, (100, 200, 100, 50), "Resume", ubuntuFontSmall)
+
 def loseLife():
     global lives
 
@@ -152,7 +155,7 @@ def newLevel(level_):
     except IndexError: # This means that the last level has been completed and therefore the game is won
         setState(gameWon)
 
-def displayCurrentLevel(inGame=True, position=None):
+def displayCurrentLevel(inGame=True, position=None): # could be further right idk
     global currentLevel
 
     if inGame:
@@ -179,11 +182,15 @@ def destroyBricks():
         ball.brickIndex = None
         # print(len(bricks))
 
-# Display Info
-def drawPaused():
+# Pause menu
+def pauseMenuHeading():
     pauseText = 'PAUSED'
-    pausePosition = (windowWidth/2 - statusFont.size(pauseText)[0]/2, windowHeight/2 - statusFont.size(pauseText)[1]/2)
+    pausePosition = (windowWidth/2 - statusFont.size(pauseText)[0]/2, statusFont.size(pauseText)[1]/3)
     drawText(pausePosition, statusFont, pauseText, colours.lightGrey)
+
+def drawPauseMenuOverlay():
+    pauseMenuHeading()
+    resumeButton.draw()
 
 def drawScore(position=None, font=None, colour='grey'):
     global score
@@ -330,6 +337,11 @@ while True:
             if event.key == pygame.K_RIGHT:
                 controlsState["right"] = False
 
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            mouse_pos = event.pos
+            if resumeButton.isClicked(mouse_pos):
+                print("XD")
+
         if event.type == pygame.QUIT:
             quitGame()
 
@@ -340,7 +352,7 @@ while True:
         drawBricks()
         ball.draw()
         bat.draw()
-        drawPaused()
+        drawPauseMenuOverlay()
 
     elif state == onBat:
         if len(bricks) == 0:

@@ -174,24 +174,25 @@ class Brick():
         self.pygame.draw.rect(self.surface, self.colour, (self.x, self.y, self.width, self.height))
 
 class Button():
-    def __init__(self, pygame, surface, colour, rectangle, text, font):
+    def __init__(self, pygame, surface, buttonColour, textColour, rectangle, text, font):
         self.pygame = pygame
         self.surface = surface
-        self.colour = colour
+        self.buttonColour = buttonColour
+        self.textColour = textColour
         self.rectangle = self.pygame.Rect(rectangle)
         self.text = text
         self.font = font
 
-        self.textObj = self.font.render(self.text, 1, self.colour)
+        self.textObj = self.font.render(self.text, 1, self.textColour)
 
-        self.position = (self.rectangle.width/2 - self.font.size(self.text)[0]/2, self.rectangle.height/2 - self.font.size(self.text)[1]/2)
+        self.position = (self.rectangle.x + self.rectangle.width/2 - self.font.size(self.text)[0]/2, self.rectangle.y + self.rectangle.height/2 - self.font.size(self.text)[1]/2)
 
     def draw(self):
-        self.pygame.draw.rect(self.surface, self.colour, self.rectangle)
+        self.pygame.draw.rect(self.surface, self.buttonColour, self.rectangle)
         self.surface.blit(self.textObj, self.position)
 
-    def isClicked(self):
-        if button.collidepoint(mouse_pos):
+    def isClicked(self, mouse_pos):
+        if self.rectangle.collidepoint(mouse_pos):
             return True
 
 # class Menu():
